@@ -5,8 +5,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\TokenStore\TokenCache;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
 
@@ -36,6 +38,7 @@ class AuthController extends Controller
 
   public function callback(Request $request)
   {
+
     // Validate state
     $expectedState = session('oauthState');
     $request->session()->forget('oauthState');
@@ -52,6 +55,8 @@ class AuthController extends Controller
         ->with('error', 'Invalid auth state')
         ->with('errorDetail', 'The provided auth state did not match the expected value');
     }
+
+
 
     // Authorization code should be in the "code" query param
     $authCode = $request->query('code');
@@ -81,8 +86,27 @@ class AuthController extends Controller
           ->execute();
 
         $tokenCache = new TokenCache();
+
         $tokenCache->storeTokens($accessToken, $user);
 
+        $user_auth = User::where('email',session()->get('userEmail'))->get()->first();
+
+
+        if($user_auth){
+            Auth::login($user_auth);
+            if(session()->get('userName') != $user_auth->name){
+                $user_auth->name = session()->get('userName');
+                $user_auth->save();
+            }
+        }else{
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            $request->session()->flush();
+            $tokenCache = new TokenCache();
+            $tokenCache->clearTokens();
+            abort(404,'Usuario no Encontrado');
+        }
         return redirect('/');
       }
       catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
@@ -101,6 +125,7 @@ class AuthController extends Controller
   {
     $tokenCache = new TokenCache();
     $tokenCache->clearTokens();
+    session()->flush();
     return redirect('/');
   }
 }
