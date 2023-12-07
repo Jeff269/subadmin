@@ -8,6 +8,7 @@ import { Head, useForm } from '@inertiajs/react';
 export default function Index(props) {
 
     const {data,setData,post,reset,progress} = useForm({
+        id:'',
         nombres:'',
         apellido_paterno:'',
         apellido_materno:'',
@@ -58,12 +59,12 @@ export default function Index(props) {
                         </div>
                     </div>
                 </div>
-                <div className='sm:w-1/2 bg-white p-4 rounded-md shadow-md shadow-blue-500'>
-                    <form action="" className='flex flex-col h-full justify-center'>
-                            <h1 className='uppercase font-bold text-xl text-center text-blue-800'>
-                                Rellena el formulario
-                            </h1>
-                            <div className='w-full px-1 py-2'>
+                <div className='sm:w-1/2 bg-white p-4 rounded-md shadow-md shadow-blue-500 max-h-[80vh]'>
+                    <h1 className='uppercase font-bold text-xl text-center text-blue-800 h-[28px]'>
+                        Rellena el formulario
+                    </h1>
+                    <form action="" className='flex flex-col max-w-[650px] z-50 overflow-y-scroll overflow-hidden max-h-[70vh]'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Apellido Paterno'}></InputLabel>
                                 <TextInput
                                     value={data.apellido_paterno}
@@ -72,7 +73,7 @@ export default function Index(props) {
                                 </TextInput>
                                 <InputError message={props.errors.apellido_paterno}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Apellido Materno'}></InputLabel>
                                 <TextInput
                                     value={data.apellido_materno}
@@ -81,7 +82,7 @@ export default function Index(props) {
                                 </TextInput>
                                 <InputError message={props.errors.apellido_materno}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Nombres'}></InputLabel>
                                 <TextInput
                                     value={data.nombres}
@@ -90,7 +91,7 @@ export default function Index(props) {
                                 </TextInput>
                                 <InputError message={props.errors.nombres}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Correo Electrónico'}></InputLabel>
                                 <TextInput
                                     value={data.correo}
@@ -102,7 +103,7 @@ export default function Index(props) {
                                 }
                                 <InputError message={props.errors.codigo_estudiante}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Código de Estudiante'}></InputLabel>
                                 <TextInput
                                     value={data.codigo_estudiante}
@@ -113,7 +114,7 @@ export default function Index(props) {
                                 <InputError message={props.errors.codigo_estudiante}></InputError>
                             </div>
 
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Número de Celular'}></InputLabel>
                                 <TextInput
                                     value={data.celular}
@@ -123,7 +124,7 @@ export default function Index(props) {
                                 </TextInput>
                                 <InputError message={props.errors.celular}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Número de DNI'}></InputLabel>
                                 <TextInput
                                     value={data.dni}
@@ -133,7 +134,7 @@ export default function Index(props) {
                                 </TextInput>
                                 <InputError message={props.errors.dni}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Foto de DNI o de Carnet'}></InputLabel>
                                 <TextInput
                                     onChange={e=>setData('archivo_dni',e.target.files[0])}
@@ -143,7 +144,7 @@ export default function Index(props) {
                                 </TextInput>
                                 <InputError message={props.errors.archivo_dni}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Tipo de Problema'}></InputLabel>
                                 <select name="" id=""
                                     onChange={e=>setData('problema',e.target.value)}
@@ -155,7 +156,7 @@ export default function Index(props) {
                                 </select>
                                 <InputError message={props.errors.problema}></InputError>
                             </div>
-                            <div className='w-full px-1 py-2'>
+                            <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Detalle su problema (Opcional)'}></InputLabel>
 
                                 <TextInput

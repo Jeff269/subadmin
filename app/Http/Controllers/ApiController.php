@@ -54,19 +54,15 @@ class ApiController extends Controller
         }
     }
 
-    public function updateNumber($email,$number){
+    public function updateNumber($email){
 
         $viewData = $this->loadViewData();
         $graph = $this->getGraph();
         $getEventsUrl = '/users/'.$email.'/authentication/phoneMethods/3179e48a-750b-4051-897c-87b9720928f7';
 
-        $requestBody = new PhoneAuthenticationMethod();
-        $requestBody->setPhoneNumber('+51 '.$number);
-        $requestBody->setPhoneType('mobile');
-
         try{
             $events = $graph
-                ->createRequest('PATCH',$getEventsUrl)
+                ->createRequest('GET',$getEventsUrl)
                 ->setReturnType(Model\User::class)
                 ->execute();
             $viewData['users'] = $events;

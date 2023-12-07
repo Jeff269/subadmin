@@ -1,7 +1,7 @@
 import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import { CheckCircleIcon,XCircleIcon,PaperAirplaneIcon } from '@heroicons/react/24/solid'
 
@@ -23,6 +23,7 @@ export default function Restore(props) {
             setValidarData(validarData => ({
                 ...validarData,
                 existe:true,
+                office_id:result.id,
                 office_data:{
                     nombre: result.displayName,
                     correo: result.mail,
@@ -43,7 +44,7 @@ export default function Restore(props) {
       }
     }
 
-    async function reset(correo) {
+    async function resetPassword(correo) {
         try {
           const response = await fetch(
             '/call/resetPassword/'+correo, {
@@ -76,6 +77,7 @@ export default function Restore(props) {
       }
 
     const [validarData,setValidarData] = useState({
+        id:'',
         nombres:'',
         correo:'',
         celular:'',
@@ -85,6 +87,7 @@ export default function Restore(props) {
         existe: null,
         nueva_contraseña:null,
         error_contraseña:null,
+        office_id:null,
         office_data:{
             nombre: '',
             correo: '',
@@ -93,11 +96,57 @@ export default function Restore(props) {
 
     const [validarModal,setValidarModal] = useState(false)
 
+
+    const {data,setData,post,reset} = useForm({
+        id:'',
+    })
+
+    const submit = (e) => {
+        post(route('solicitud.update',data.id), { onSuccess: () => {reset();setValidarModal(false)} });
+    };
+
     return (
         <AuthenticatedLayout
             auth={props.auth}
             errors={props.errors}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Solicitudes de Soporte</h2>}
+            header={
+                <div className='flex justify-between'>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight uppercase">
+                        {
+                            window.location.pathname == '/restored' &&(
+                                'Solicitudes Atendidas'
+                            )
+                        }
+                        {
+                            window.location.pathname == '/restore' &&(
+                                'Solicitudes por Atender'
+                            )
+                        }
+                    </h2>
+                    {
+                        window.location.pathname == '/restored' &&(
+                            <Link
+                                href='/restore'
+                            >
+                                <SecondaryButton>
+                                    Ver Solicitudes por Atender
+                                </SecondaryButton>
+                            </Link>
+                        )
+                    }
+                    {
+                        window.location.pathname == '/restore' &&(
+                            <Link
+                                href='/restored'
+                            >
+                                <SecondaryButton>
+                                    Ver Solicitudes Atendidas
+                                </SecondaryButton>
+                            </Link>
+                        )
+                    }
+                </div>
+            }
         >
             <Head title="Solicitudes" />
 
@@ -107,7 +156,7 @@ export default function Restore(props) {
                         <div className="p-6 text-gray-900">
                             <table className='w-full'>
                                 <thead>
-                                    <tr className='border-b'>
+                                    <tr className='border-b-2 border-blue-800 uppercase font-bold text-blue-900'>
                                         <th>N°</th>
                                         <th>Estudiante</th>
                                         <th>Correo Electrónico</th>
@@ -127,6 +176,7 @@ export default function Restore(props) {
                                                     <button className='border px-2 rounded-md m-1'
                                                         onClick={(e)=>{setValidarData(validarData => ({
                                                             ...validarData,
+                                                            id:soli.id,
                                                             nombres: soli.ap_paterno+" "+soli.ap_materno+" "+soli.nombres,
                                                             correo: soli.correo,
                                                             celular: soli.celular,
@@ -134,7 +184,8 @@ export default function Restore(props) {
                                                             dni: soli.dni,
                                                             dni_url: soli.documento_url,
                                                         }));
-                                                        setValidarModal(true)
+                                                        setValidarModal(true);
+                                                        setData('id',soli.id)
                                                         }}
                                                     >
                                                         Atender
@@ -274,6 +325,20 @@ export default function Restore(props) {
                                     </p>
                                 )
                             }
+                            {
+                                validarData.existe == false && (
+                                <button
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            window.open("https://api.whatsapp.com/send/?phone=+51"+validarData.celular+"&text=No Encontramos tu correo, vuelve a rellenar el formulario en soportecorreo.uncp.edu.pe para poder ayudarte.")
+                                        }}
+                                        className='flex border-green-500 border-2 p-1 text-green-900 rounded-md'
+                                    >
+                                        <PaperAirplaneIcon className='w-4 text-green-600'/>
+                                        Enviar por Whatsapp
+                                    </button>
+                                )
+                            }
                         </div>
                     </div>
                     {
@@ -298,7 +363,7 @@ export default function Restore(props) {
                                     <button
                                         onClick={(e)=>{
                                             e.preventDefault();
-                                            reset(validarData.correo)
+                                            resetPassword(validarData.correo)
                                         }}
                                         className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold w-4/5 uppercase'
                                         >
@@ -322,6 +387,24 @@ export default function Restore(props) {
                                             </p>
                                         )
                                     }
+                                </div>
+                            </div>
+                        )
+                    }
+
+                    {
+                        validarData.existe == true && (
+                            <div className='w-full flex border-b-2 pl-4'>
+                                <div className='w-1/3 p-1'>
+                                    <button
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            window.open('https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/'+validarData.office_id+'/hidePreviewBanner~/true?Microsoft_AAD_IAM_legacyAADRedirect=true')
+                                        }}
+                                        className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold w-4/5 uppercase mt-2'
+                                        >
+                                        Actualizar número
+                                    </button>
                                 </div>
                             </div>
                         )
@@ -354,6 +437,15 @@ export default function Restore(props) {
 
                 </div>
                 <div className='p-2 bt-2 w-full bg-gray-100 flex justify-end'>
+                    <SecondaryButton
+                        className='!text-white !bg-green-600 mx-2'
+                        onClick={(e)=>{
+                            e.preventDefault()
+                            submit()
+                        }}
+                    >
+                        Finalizar
+                    </SecondaryButton>
                     <SecondaryButton
                         onClick={(e)=>{
                             setValidarModal(false);

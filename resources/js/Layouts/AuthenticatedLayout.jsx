@@ -10,24 +10,21 @@ export default function Authenticated({ auth, header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
+            <nav className="border-b border-gray-100 bg-[#00204d]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+                    <div className="flex justify-between h-16 ">
+                        <div className="flex ">
                             <div className="shrink-0 flex items-center">
-                                <Link href="/">
+                                <Link href="/admin">
                                     <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
-                                </NavLink>
                                 <NavLink href={route('restore.index')} active={route().current('restore.index')}>
                                     Solicitudes
                                 </NavLink>
                                 <NavLink href={route('users.index')} active={route().current('users.index')}>
-                                    Usuarios
+                                    Administradores
                                 </NavLink>
                             </div>
                         </div>
@@ -60,9 +57,8 @@ export default function Authenticated({ auth, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
                                         <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
+                                            Cerrar Sesión
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -97,8 +93,11 @@ export default function Authenticated({ auth, header, children }) {
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                            Dashboard
+                        <ResponsiveNavLink href={route('restore.index')} active={route().current('restore.index')}>
+                            Solicitudes
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('users.index')} active={route().current('users.index')}>
+                            Administradores
                         </ResponsiveNavLink>
                     </div>
 

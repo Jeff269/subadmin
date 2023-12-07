@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SolicitudController;
 use Illuminate\Foundation\Application;
@@ -25,9 +26,11 @@ Route::get('/error', function () {
 
 Route::get('/signin', 'AuthController@signin')->name('signin');
 
-Route::get('/formulario',[SolicitudController::class,'index'])->name('solicitud.index');
+Route::get('/',[SolicitudController::class,'index'])->name('solicitud.index');
 
-Route::get('/formulario/success',[SolicitudController::class,'success'])->name('solicitud.sucess');
+Route::get('/error',[SolicitudController::class,'error'])->name('solicitud.error');
+
+Route::get('/success',[SolicitudController::class,'success'])->name('solicitud.sucess');
 
 Route::post('/formulario',[SolicitudController::class,'store'])->name('solicitud.store');
 
@@ -39,8 +42,12 @@ Route::post('/calendar/new', 'CalendarController@createNewEvent');
 Route::get('/callback', 'AuthController@callback');
 
 Route::middleware('ensureAuth')->group(function () {
-    Route::get('/',[AdminController::class,'dashboard'])->name('dashboard');
+
+    Route::get('/admin',[AdminController::class,'dashboard'])->name('dashboard');
     Route::get('/restore',[AdminController::class,'restore'])->name('restore.index');
+
+    Route::get('/restored',[AdminController::class,'restored'])->name('restored.index');
+
     Route::get('/users',[AdminController::class,'users'])->name('users.index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,11 +55,17 @@ Route::middleware('ensureAuth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/userss', 'UsersController@index');
 
+    Route::post('solicitud/update/{solicitud}',[SolicitudController::class,'updateState'])->name('solicitud.update');
+
+
+    Route::post('create/user',[AdminController::class,'createUser'])->name('user.create');
+
+    Route::post('delete/user',[AdminController::class,'deleteUser'])->name('user.delete');
 
     //API
     Route::get('call/{user}',[ApiController::class,'consulta']);
     Route::get('call/resetPassword/{user}',[ApiController::class,'reset']);
-    Route::get('call/updateNumber/{user}/{number}',[ApiController::class,'updateNumber']);
+    Route::get('call/updateNumber/{user}',[ApiController::class,'updateNumber']);
 });
 
 require __DIR__.'/auth.php';

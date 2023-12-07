@@ -107,10 +107,10 @@ class AuthController extends Controller
             $tokenCache->clearTokens();
             abort(404,'Usuario no Encontrado');
         }
-        return redirect('/');
+        return redirect('/admin');
       }
       catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-        return redirect('/')
+        return redirect('/admin')
           ->with('error', 'Error requesting access token')
           ->with('errorDetail', json_encode($e->getResponseBody()));
       }

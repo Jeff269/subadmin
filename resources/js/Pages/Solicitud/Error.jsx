@@ -23,14 +23,14 @@ export default function Index(props) {
                     </div>
                 </div>
                 <div className='sm:w-1/2 bg-white p-4 rounded-md sm:shadow-md sm:shadow-blue-500 flex flex-col items-center justify-center'>
-                    <h2 className='uppercase text-[#07a889] font-bold text-2xl text-center'>
-                        ¡Su solicitud fue Registrada Satisfactoriamente!
+                    <h2 className='uppercase text-[#cc2828] font-bold text-2xl text-center'>
+                        ¡Su solicitud no se registró!
                     </h2>
-                    <div className='my-4 w-[300px] h-[300px] rounded-full overflow-hidden border-[20px] border-[#07a889]'>
-                        <img src="/assets/success.gif" alt="" className='w-full h-full' />
+                    <div className='my-4 w-[300px] h-[300px] rounded-full overflow-hidden border-[20px] border-[#cc2828]'>
+                        <img src="/assets/error.gif" alt="" className='w-full h-full' />
                     </div>
                     <p className='px-24 text-center'>
-                        El administrador se contactará con usted por Whatsapp en menos de 6 horas
+                        Ya tiene una solicitud registrada actualmente, vuelva a intentarlo en 6 horas.
                     </p>
                 </div>
             </div>
