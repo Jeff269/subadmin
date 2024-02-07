@@ -19,7 +19,9 @@ class AdminController extends Controller
 
     public function restore(){
 
-        $solicitudes = Solicitud::where('atendido','0')->get();
+        $solicitudes = Solicitud::where('atendido','0')
+                    ->orderBy('created_at','desc')
+                    ->paginate(25);
         return Inertia::render('Admin/Restore',[
             'solicitudes' => $solicitudes,
             'url_path' => env('AWS_SUBDOMAIN_NAME'),
@@ -28,7 +30,9 @@ class AdminController extends Controller
 
     public function restored(){
 
-        $solicitudes = Solicitud::where('atendido','1')->get();
+        $solicitudes = Solicitud::where('atendido','1')
+                        ->orderBy('created_at','desc')
+                        ->paginate(25);
 
         return Inertia::render('Admin/Restore',[
             'solicitudes' => $solicitudes,

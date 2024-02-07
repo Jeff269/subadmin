@@ -30,7 +30,7 @@ export default function Index(props) {
                         <img src="/assets/success.gif" alt="" className='w-full h-full' />
                     </div>
                     <p className='px-24 text-center'>
-                        El administrador se contactará con usted por Whatsapp en menos de 6 horas
+                        Su solicitud será atendida en un plazo menor a 6 horas.
                     </p>
                 </div>
             </div>

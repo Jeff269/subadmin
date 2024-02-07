@@ -56,8 +56,6 @@ class AuthController extends Controller
         ->with('errorDetail', 'The provided auth state did not match the expected value');
     }
 
-
-
     // Authorization code should be in the "code" query param
     $authCode = $request->query('code');
     if (isset($authCode)) {
@@ -90,7 +88,6 @@ class AuthController extends Controller
         $tokenCache->storeTokens($accessToken, $user);
 
         $user_auth = User::where('email',session()->get('userEmail'))->get()->first();
-
 
         if($user_auth){
             Auth::login($user_auth);

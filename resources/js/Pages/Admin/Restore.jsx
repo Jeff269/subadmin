@@ -19,7 +19,7 @@ export default function Restore(props) {
         });
         const result = await response.json();
 
-        if(result.displayName && result.mail && result.mail == validarData.correo){
+        if(result.displayName && result.mail){
             setValidarData(validarData => ({
                 ...validarData,
                 existe:true,
@@ -82,6 +82,9 @@ export default function Restore(props) {
         correo:'',
         celular:'',
         codigo:'',
+        problema:'',
+        detalles:'',
+        fecha:'',
         dni:'',
         dni_url:'',
         existe: null,
@@ -95,6 +98,7 @@ export default function Restore(props) {
     })
 
     const [validarModal,setValidarModal] = useState(false)
+    const [updatePhone,setUpdatePhone] = useState(false)
 
 
     const {data,setData,post,reset} = useForm({
@@ -102,8 +106,31 @@ export default function Restore(props) {
     })
 
     const submit = (e) => {
-        post(route('solicitud.update',data.id), { onSuccess: () => {reset();setValidarModal(false)} });
+        post(route('solicitud.update',data.id), {onSuccess: () => {
+            reset();
+            setValidarModal(false);
+            setValidarData({
+                nombres:'',
+                correo:'',
+                celular:'',
+                codigo:'',
+                fecha:'',
+                dni:'',
+                dni_url:'',
+                existe: null,
+                nueva_contraseña:null,
+                office_data:{
+                    nombre: '',
+                    correo: '',
+                }
+            });
+        } });
     };
+
+    function formatDate(date){
+        let d = new Date(date)
+        return (d.toLocaleString())
+    }
 
     return (
         <AuthenticatedLayout
@@ -157,29 +184,34 @@ export default function Restore(props) {
                             <table className='w-full'>
                                 <thead>
                                     <tr className='border-b-2 border-blue-800 uppercase font-bold text-blue-900'>
-                                        <th>N°</th>
-                                        <th>Estudiante</th>
-                                        <th>Correo Electrónico</th>
-                                        <th>Problema</th>
-                                        <th>Acciones</th>
+                                        <th className='w-1/12'>N°</th>
+                                        <th className='w-3/12'>Estudiante</th>
+                                        <th className='w-3/12'>Correo Electrónico</th>
+                                        <th className='w-2/12'>Problema</th>
+                                        <th className='w-2/12'>Fecha y Hora</th>
+                                        <th className='w-1/12'>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        props.solicitudes.map((soli,index)=>
-                                            <tr key={index} className='border-b'>
-                                                <th>{index+1}</th>
-                                                <th>{soli.ap_paterno+" "+soli.ap_materno+" "+soli.nombres}</th>
+                                        props.solicitudes.data.map((soli,index)=>
+                                            <tr key={index} className='border-b hover:bg-slate-100'>
+                                                <th>{props.solicitudes.per_page*(props.solicitudes.current_page-1)+ index+1}</th>
+                                                <th className='uppercase'>{soli.ap_paterno+" "+soli.ap_materno+" "+soli.nombres}</th>
                                                 <th>{soli.correo}</th>
                                                 <th>{soli.problema}</th>
+                                                <th>{formatDate(soli.created_at)}</th>
                                                 <th>
-                                                    <button className='border px-2 rounded-md m-1'
+                                                    <button className='border px-2 rounded-md m-1 border-blue-700'
                                                         onClick={(e)=>{setValidarData(validarData => ({
                                                             ...validarData,
                                                             id:soli.id,
                                                             nombres: soli.ap_paterno+" "+soli.ap_materno+" "+soli.nombres,
                                                             correo: soli.correo,
                                                             celular: soli.celular,
+                                                            problema: soli.problema,
+                                                            detalles: soli.detalles,
+                                                            fecha: formatDate(soli.created_at),
                                                             codigo: soli.cod_estudiante,
                                                             dni: soli.dni,
                                                             dni_url: soli.documento_url,
@@ -196,6 +228,26 @@ export default function Restore(props) {
                                     }
                                 </tbody>
                             </table>
+
+                            <div className='flex justify-center p-4 w-full'>
+                                {
+                                    props.solicitudes.links.map((link,index)=>
+                                        <Link key={index} className='w-8 border mx-1 text-center' href={link.url}>
+                                            {
+                                                link.label == "&laquo; Previous" && "<"
+                                            }
+                                            {
+                                                link.label == "Next &raquo;" && ">"
+                                            }
+                                            {
+                                                link.label != "&laquo; Previous" && link.label != "Next &raquo;" && (
+                                                    link.label
+                                                )
+                                            }
+                                        </Link>
+                                    )
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,6 +265,7 @@ export default function Restore(props) {
                                 correo:'',
                                 celular:'',
                                 codigo:'',
+                                fecha:'',
                                 dni:'',
                                 dni_url:'',
                                 existe: null,
@@ -289,6 +342,35 @@ export default function Restore(props) {
                         >
                             Abrir Archivo
                         </button>
+                    </div>
+
+                    <div className='w-full flex border-b-2 pl-4'>
+                        <p className='w-1/3 font-bold'>
+                            Fecha
+                        </p>
+                        <p>
+                            {validarData.fecha}
+                        </p>
+                    </div>
+
+                    <h2 className='uppercase font-bold text-green-900 mt-4'>
+                        Datos de Solicitud
+                    </h2>
+                    <div className='w-full flex border-b-2 pl-4'>
+                        <p className='w-1/3 font-bold'>
+                            Problema
+                        </p>
+                        <p className='w-2/3'>
+                            {validarData.problema}
+                        </p>
+                    </div>
+                    <div className='w-full flex border-b-2 pl-4'>
+                        <p className='w-1/3 font-bold'>
+                            Detalles
+                        </p>
+                        <p className='w-2/3'>
+                            {validarData.detalles}
+                        </p>
                     </div>
                 </div>
                 <div className='px-4'>
@@ -391,7 +473,6 @@ export default function Restore(props) {
                             </div>
                         )
                     }
-
                     {
                         validarData.existe == true && (
                             <div className='w-full flex border-b-2 pl-4'>
@@ -399,6 +480,7 @@ export default function Restore(props) {
                                     <button
                                         onClick={(e)=>{
                                             e.preventDefault();
+                                            setUpdatePhone(true)
                                             window.open('https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/'+validarData.office_id+'/hidePreviewBanner~/true?Microsoft_AAD_IAM_legacyAADRedirect=true')
                                         }}
                                         className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold w-4/5 uppercase mt-2'
@@ -406,10 +488,26 @@ export default function Restore(props) {
                                         Actualizar número
                                     </button>
                                 </div>
+                                {
+                                    updatePhone && (
+                                        <div className='flex items-center'>
+                                            <button
+                                                onClick={(e)=>{
+                                                    e.preventDefault();
+                                                    window.open("https://api.whatsapp.com/send/?phone=+51"+validarData.celular+"&text=El número de verificación fue actualizado al "+validarData.celular)
+                                                }}
+                                                className='flex items-center border-green-500 border-2 p-1 text-green-900 rounded-md'
+                                            >
+                                                <PaperAirplaneIcon className='w-4 text-green-600'/>
+                                                Enviar por Whatsapp
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                                
                             </div>
                         )
                     }
-
                     {
                         validarData.error_contraseña == false && (
                             <div className='w-full flex border-b-2 pl-'>

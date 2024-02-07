@@ -33,7 +33,6 @@ class ApiController extends Controller
     }
 
     public function reset($email){
-
         $viewData = $this->loadViewData();
         $graph = $this->getGraph();
         $getEventsUrl = '/users/'.$email.'/authentication/methods/28c10230-6103-485e-b985-444c60001490/resetPassword';
@@ -55,7 +54,6 @@ class ApiController extends Controller
     }
 
     public function updateNumber($email){
-
         $viewData = $this->loadViewData();
         $graph = $this->getGraph();
         $getEventsUrl = '/users/'.$email.'/authentication/phoneMethods/3179e48a-750b-4051-897c-87b9720928f7';
@@ -89,11 +87,4 @@ class ApiController extends Controller
 
     }
 
-    private function getGraphService(): GraphServiceClient
-    {
-        $tokenCache = new TokenCache();
-        $accessToken = $tokenCache->getAccessToken();
-
-        $graphService = new GraphServiceClient();
-    }
 }
