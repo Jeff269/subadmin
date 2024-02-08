@@ -68,7 +68,7 @@ class SolicitudController extends Controller
                 'documento_hash' => $file_name,
                 'cod_estudiante' => $validated['codigo_estudiante'],
                 'problema' => $validated['problema'],
-                'detalles' => $request['detalles'],
+                'detalles' => ($request['detalles'])?($request['detalles']):'',
             ]);
         }
 
