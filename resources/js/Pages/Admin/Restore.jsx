@@ -99,6 +99,7 @@ export default function Restore(props) {
 
     const [validarModal,setValidarModal] = useState(false)
     const [updatePhone,setUpdatePhone] = useState(false)
+    const [updateAdesa,setUpdateAdesa] = useState(false)
 
 
     const {data,setData,post,reset} = useForm({
@@ -217,7 +218,9 @@ export default function Restore(props) {
                                                             dni_url: soli.documento_url,
                                                         }));
                                                         setValidarModal(true);
-                                                        setData('id',soli.id)
+                                                        setData('id',soli.id);
+                                                        setUpdatePhone(false);
+                                                        setUpdateAdesa(false);
                                                         }}
                                                     >
                                                         Atender
@@ -328,21 +331,24 @@ export default function Restore(props) {
                             {validarData.dni}
                         </p>
                     </div>
+                    {
+                        validarData.dni_url &&
+                        <div className='w-full flex border-b-2 pl-4'>
+                            <p className='w-1/3 font-bold'>
+                                Foto de DNI o Carnet
+                            </p>
+                            <button
+                                onClick={(e)=>{
+                                    e.preventDefault();
+                                    window.open(props.url_path+validarData.dni_url)
+                                }}
+                                className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold'
+                            >
+                                Abrir Archivo
+                            </button>
+                        </div>
+                    }
 
-                    <div className='w-full flex border-b-2 pl-4'>
-                        <p className='w-1/3 font-bold'>
-                            Foto de DNI o Carnet
-                        </p>
-                        <button
-                            onClick={(e)=>{
-                                e.preventDefault();
-                                window.open(props.url_path+validarData.dni_url)
-                            }}
-                            className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold'
-                        >
-                            Abrir Archivo
-                        </button>
-                    </div>
 
                     <div className='w-full flex border-b-2 pl-4'>
                         <p className='w-1/3 font-bold'>
@@ -377,6 +383,66 @@ export default function Restore(props) {
                     <h2 className='text-green-900 uppercase font-bold'>
                         Acciones
                     </h2>
+                    <div className='w-full flex border-b-2 pl-4'>
+                        <div className='w-1/3 p-1'>
+                            <button
+                                onClick={(e)=>{
+                                    e.preventDefault();
+                                    navigator.clipboard.writeText(validarData.codigo);
+                                    setUpdateAdesa(true)
+                                    window.open('https://erpintranet.uncp.edu.pe/academico/alumnos')
+                                }}
+                                className='border border-blue-700 px-2 rounded-md bg-blue-50 text-blue-900 font-bold w-4/5 uppercase mt-2'
+                                >
+                                Actualizar Contraseña de ADESA
+                            </button>
+                        </div>
+                        {
+                            updateAdesa && (
+                                <div className='flex items-center'>
+                                    <button
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            window.open(`https://api.whatsapp.com/send/?phone=+51${validarData.celular}&text=¡Buen día! 👋%0ATe saluda el Equipo de Soporte ADESA 💻. Queremos informarte que tu contraseña ha sido restablecida con éxito.%0AA continuación, te proporcionamos tus nuevos datos de acceso:%0A- 📧 Usuario: ${validarData.codigo.toUpperCase()}%0A- 🔑 Contraseña: ${validarData.dni}A%0ARecuerda que si tienes alguna pregunta o necesitas más asistencia, estamos aquí para ayudarte.%0A¡Que tengas un excelente día! 🌟👍🏻`)
+                                        }}
+                                        className='flex items-center border-blue-500 border-2 p-1 text-blue-900 rounded-md'
+                                    >
+                                        <PaperAirplaneIcon className='w-4 text-blue-600'/>
+                                        Enviar por Whatsapp
+                                    </button>
+                                </div>
+                            )
+                        }
+                        
+                    </div>
+
+                    <div className='w-full flex border-b-2 pl-4'>
+                        <div className='w-1/3 p-1'>
+                            <button
+                                className='border border-orange-700 px-2 rounded-md bg-orange-50 text-orange-900 font-bold w-4/5 uppercase mt-2'
+                                >
+                                Configurar Autenticador
+                            </button>
+                        </div>
+                        {
+                            (
+                                <div className='flex items-center'>
+                                    <button
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            window.open(`https://api.whatsapp.com/send/?phone=+51${validarData.celular}&text=¡Buen día! 👋%0ATe saluda el Equipo de Soporte de Correo 💻. Queremos informarte que para configurar tu autenticador tienes que realizar los pasos que indica el siguiente video: %0A ▶ https://youtu.be/uWG0O2O8jBY %0ARecuerda que si tienes alguna pregunta o necesitas más asistencia, estamos aquí para ayudarte.%0A¡Que tengas un excelente día! 🌟👍🏻`)
+                                        }}
+                                        className='flex items-center border-orange-500 border-2 p-1 text-orange-900 rounded-md'
+                                    >
+                                        <PaperAirplaneIcon className='w-4 text-orange-600'/>
+                                        Enviar por Whatsapp
+                                    </button>
+                                </div>
+                            )
+                        }
+                        
+                    </div>
+
 
                     <div className='w-full flex border-b-2 pl-4'>
                         <div className='w-1/3 p-1'>
@@ -412,7 +478,7 @@ export default function Restore(props) {
                                 <button
                                         onClick={(e)=>{
                                             e.preventDefault();
-                                            window.open("https://api.whatsapp.com/send/?phone=+51"+validarData.celular+"&text=No Encontramos tu correo, vuelve a rellenar el formulario en soportecorreo.uncp.edu.pe para poder ayudarte.")
+                                            window.open(`https://api.whatsapp.com/send/?phone=+51${validarData.celular}&text=Buen día 👋,%0ALamentablemente, no hemos podido localizar tu correo institucional en nuestro sistema 😞🥲. Por favor, asegúrate de que has digitado el correo institucional correctamente e intenta nuevamente.%0ASi sigues teniendo dificultades para recuperar tu cuenta, por favor contáctanos directamente para que podamos asistirte de manera personalizada.%0AGracias por tu comprensión y quedamos a tu disposición para cualquier otra consulta.%0ASaludos cordiales,%0AEquipo de Soporte Correo`)
                                         }}
                                         className='flex border-green-500 border-2 p-1 text-green-900 rounded-md'
                                     >
@@ -423,6 +489,7 @@ export default function Restore(props) {
                             }
                         </div>
                     </div>
+                    
                     {
                         validarData.existe == true && (
                             <div className='w-full flex border-b-2 pl-'>
@@ -438,6 +505,42 @@ export default function Restore(props) {
                         )
                     }
 
+                    {
+                        validarData.existe == true && (
+                            <div className='w-full flex border-b-2 pl-4'>
+                                <div className='w-1/3 p-1'>
+                                    <button
+                                        onClick={(e)=>{
+                                            e.preventDefault();
+                                            navigator.clipboard.writeText(validarData.celular);
+                                            setUpdatePhone(true)
+                                            window.open('https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/'+validarData.office_id+'/hidePreviewBanner~/true?Microsoft_AAD_IAM_legacyAADRedirect=true')
+                                        }}
+                                        className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold w-4/5 uppercase mt-2'
+                                        >
+                                        Actualizar número
+                                    </button>
+                                </div>
+                                {
+                                    updatePhone && (
+                                        <div className='flex items-center'>
+                                            <button
+                                                onClick={(e)=>{
+                                                    e.preventDefault();
+                                                    window.open(`https://api.whatsapp.com/send/?phone=+51${validarData.celular}&text=¡Buen día! 👋%0ASomos el Equipo de Soporte Correo 💻.%0AQueremos informarte que hemos recibido tu solicitud para modificar tu número de celular asociado a tu cuenta de correo institucional.%0AA continuación, te proporcionamos tu número de celular actualizado: ${validarData.celular} %0ASi necesitas más asistencia o tienes alguna pregunta adicional, no dudes en contactarnos. ¡Gracias y que tengas un excelente día! 👍🏻🙂`)
+                                                }}
+                                                className='flex items-center border-green-500 border-2 p-1 text-green-900 rounded-md'
+                                            >
+                                                <PaperAirplaneIcon className='w-4 text-green-600'/>
+                                                Enviar por Whatsapp
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                                
+                            </div>
+                        )
+                    }
                     {
                         validarData.existe == true && (
                             <div className='w-full flex border-b-2 pl-4'>
@@ -474,41 +577,6 @@ export default function Restore(props) {
                         )
                     }
                     {
-                        validarData.existe == true && (
-                            <div className='w-full flex border-b-2 pl-4'>
-                                <div className='w-1/3 p-1'>
-                                    <button
-                                        onClick={(e)=>{
-                                            e.preventDefault();
-                                            setUpdatePhone(true)
-                                            window.open('https://entra.microsoft.com/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/'+validarData.office_id+'/hidePreviewBanner~/true?Microsoft_AAD_IAM_legacyAADRedirect=true')
-                                        }}
-                                        className='border border-green-700 px-2 rounded-md bg-green-50 text-green-900 font-bold w-4/5 uppercase mt-2'
-                                        >
-                                        Actualizar número
-                                    </button>
-                                </div>
-                                {
-                                    updatePhone && (
-                                        <div className='flex items-center'>
-                                            <button
-                                                onClick={(e)=>{
-                                                    e.preventDefault();
-                                                    window.open("https://api.whatsapp.com/send/?phone=+51"+validarData.celular+"&text=El número de verificación fue actualizado al "+validarData.celular)
-                                                }}
-                                                className='flex items-center border-green-500 border-2 p-1 text-green-900 rounded-md'
-                                            >
-                                                <PaperAirplaneIcon className='w-4 text-green-600'/>
-                                                Enviar por Whatsapp
-                                            </button>
-                                        </div>
-                                    )
-                                }
-                                
-                            </div>
-                        )
-                    }
-                    {
                         validarData.error_contraseña == false && (
                             <div className='w-full flex border-b-2 pl-'>
                                 <div className='w-1/3 p-1'>
@@ -521,7 +589,7 @@ export default function Restore(props) {
                                     <button
                                         onClick={(e)=>{
                                             e.preventDefault();
-                                            window.open("https://api.whatsapp.com/send/?phone=+51"+validarData.celular+"&text=Tu contraseña fue restablecida, tu correo es: "+validarData.correo+" y tu nueva contraseña es: "+validarData.nueva_contraseña)
+                                            window.open(`https://api.whatsapp.com/send/?phone=+51${validarData.celular}&text=¡Buen día! 👋%0ATe saluda el Equipo de Soporte Correo 💻. Queremos informarte que tu contraseña ha sido restablecida con éxito.%0AA continuación, te proporcionamos tus nuevos datos de acceso:%0A- 📧 Correo: ${validarData.correo}%0A- 🔑 Contraseña: ${validarData.nueva_contraseña}%0ARecuerda que si tienes alguna pregunta o necesitas más asistencia, estamos aquí para ayudarte.%0A¡Que tengas un excelente día! 🌟👍🏻`)
                                         }}
                                         className='flex border-green-500 border-2 p-1 text-green-900 rounded-md'
                                     >

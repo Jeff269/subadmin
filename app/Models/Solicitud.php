@@ -28,5 +28,7 @@ class Solicitud extends Model
     protected $attributes = [
         'atendido' => 0,
         'detalles' => '',
+        'documento_url' => '',
+        'documento_hash' => '',
     ];
 }

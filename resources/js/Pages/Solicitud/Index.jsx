@@ -120,7 +120,6 @@ export default function Index(props) {
                                     value={data.celular}
                                     onChange={e=>setData('celular',e.target.value)}
                                     className='w-full h-8 !rounded-full px-4 border-blue-200'>
-
                                 </TextInput>
                                 <InputError message={props.errors.celular}></InputError>
                             </div>
@@ -146,11 +145,13 @@ export default function Index(props) {
                             </div>
                             <div className='w-full px-1 py-1'>
                                 <InputLabel value={'Tipo de Problema'}></InputLabel>
-                                <select name="" id=""
+                                <select
                                     onChange={e=>setData('problema',e.target.value)}
                                     className='w-full h-8 !rounded-full px-4 py-1 border-blue-200'>
                                     <option disabled selected>Seleccione el tipo de problema</option>
-                                    <option>Restablecimiento de Contraseña</option>
+                                    <option>Restablecimiento de Contraseña ADESA</option>
+                                    <option>Restablecimiento de Contraseña Correo Electrónico</option>
+                                    <option>Configuración de Autenticador</option>
                                     <option>Actualización de Número de Verificación</option>
                                     <option>Otro</option>
                                 </select>

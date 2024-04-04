@@ -34,7 +34,6 @@ class SolicitudController extends Controller
             'celular' => 'required|string|max:9|min:9',
             'correo' => 'required',
             'dni' => 'required|string|max:8|min:8',
-            'archivo_dni' => 'required|file',
             'codigo_estudiante' => 'required|string|max:11|min:11',
             'problema' => 'required',
         ]);
@@ -70,7 +69,23 @@ class SolicitudController extends Controller
                 'problema' => $validated['problema'],
                 'detalles' => ($request['detalles'])?($request['detalles']):'',
             ]);
+          return redirect()->route('solicitud.sucess');
         }
+      
+      $solicitud = Solicitud::create([
+                'nombres' => $validated['nombres'],
+                'ap_paterno' => $validated['apellido_paterno'],
+                'ap_materno' => $validated['apellido_materno'],
+                'correo' => $validated['correo'],
+                'celular' => $validated['celular'],
+                'dni' => $validated['dni'],
+                'documento_url' => '',
+                'documento_hash' => '',
+                'cod_estudiante' => $validated['codigo_estudiante'],
+                'problema' => $validated['problema'],
+                'detalles' => ($request['detalles'])?($request['detalles']):'',
+            ]);
+      
 
         return redirect()->route('solicitud.sucess');
     }
